@@ -15,7 +15,7 @@ class Fork(val position: Int): Comparable<Fork>{
 
 fun philosopher(name: String, eatTime: Long, thinkTime: Long, forks: List<Fork>){
     while (!Thread.interrupted()){
-        println("$name started thing")
+        println("$name started thinking")
         Thread.sleep(thinkTime)
         println("$name getting left fork")
         forks[0].acquire()
