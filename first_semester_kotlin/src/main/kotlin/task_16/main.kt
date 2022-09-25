@@ -1,6 +1,5 @@
 package task_16
 
-import org.omg.CORBA.Object
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.Socket
