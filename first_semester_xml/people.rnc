@@ -1,0 +1,64 @@
+default namespace = ""
+
+start =
+    element people {
+        attribute count { xsd:integer },
+        element person {
+            attribute id { xsd:NCName }?,
+            attribute name { text }?,
+            (element children {
+                 (element daughter {
+                      attribute id { xsd:NCName }
+                  }
+                  | element son {
+                        attribute id { xsd:NCName }
+                    })+
+                 | element child { text }+
+             }
+             | element children-number {
+                   attribute value { xsd:integer }
+               }
+             | element family-name { xsd:NCName }
+             | element father { text }
+             | element firstname {
+                   attribute value { xsd:NCName }?,
+                   text
+               }
+             | element fullname {
+                   element first { xsd:NCName },
+                   element family { xsd:NCName }
+               }
+             | element gender {
+                   attribute value { xsd:NCName }?,
+                   text
+               }
+             | element husband {
+                   attribute value { xsd:NCName }
+               }
+             | element id {
+                   attribute value { xsd:NCName }
+               }
+             | element mother { text }
+             | element parent {
+                   attribute value { xsd:NCName }?,
+                   text
+               }
+             | element siblings {
+                   attribute val { text }?,
+                   (element brother { text }
+                    | element sister { text })*
+               }
+             | element siblings-number {
+                   attribute value { xsd:integer }
+               }
+             | element spouce {
+                   attribute value { text }?
+               }
+             | element surname {
+                   attribute value { xsd:NCName }
+               }
+             | element wife {
+                   attribute value { xsd:NCName }
+               })+
+        }+
+    }

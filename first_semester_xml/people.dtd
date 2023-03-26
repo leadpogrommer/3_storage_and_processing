@@ -1,0 +1,118 @@
+<?xml encoding="UTF-8"?>
+
+<!ELEMENT people (person)+>
+<!ATTLIST people
+    xmlns CDATA #FIXED ''
+    count  #REQUIRED>
+
+<!ELEMENT person (children|children-number|family-name|father|firstname|fullname|gender|husband|id|mother|parent
+                  |siblings|siblings-number|spouce|surname|wife)+>
+<!ATTLIST person
+    xmlns CDATA #FIXED ''
+    id  #IMPLIED
+    name CDATA #IMPLIED>
+
+<!ELEMENT children ((daughter|son)+|child+)>
+<!ATTLIST children
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT children-number EMPTY>
+<!ATTLIST children-number
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT family-name (#PCDATA)>
+<!ATTLIST family-name
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT father (#PCDATA)>
+<!ATTLIST father
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT firstname (#PCDATA)>
+<!ATTLIST firstname
+    xmlns CDATA #FIXED ''
+    value  #IMPLIED>
+
+<!ELEMENT fullname (first,family)>
+<!ATTLIST fullname
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT gender (#PCDATA)>
+<!ATTLIST gender
+    xmlns CDATA #FIXED ''
+    value  #IMPLIED>
+
+<!ELEMENT husband EMPTY>
+<!ATTLIST husband
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT id EMPTY>
+<!ATTLIST id
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT mother (#PCDATA)>
+<!ATTLIST mother
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT parent (#PCDATA)>
+<!ATTLIST parent
+    xmlns CDATA #FIXED ''
+    value  #IMPLIED>
+
+<!ELEMENT siblings (brother|sister)*>
+<!ATTLIST siblings
+    xmlns CDATA #FIXED ''
+    val CDATA #IMPLIED>
+
+<!ELEMENT siblings-number EMPTY>
+<!ATTLIST siblings-number
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT spouce EMPTY>
+<!ATTLIST spouce
+    xmlns CDATA #FIXED ''
+    value CDATA #IMPLIED>
+
+<!ELEMENT surname EMPTY>
+<!ATTLIST surname
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT wife EMPTY>
+<!ATTLIST wife
+    xmlns CDATA #FIXED ''
+    value  #REQUIRED>
+
+<!ELEMENT daughter EMPTY>
+<!ATTLIST daughter
+    xmlns CDATA #FIXED ''
+    id  #REQUIRED>
+
+<!ELEMENT son EMPTY>
+<!ATTLIST son
+    xmlns CDATA #FIXED ''
+    id  #REQUIRED>
+
+<!ELEMENT child (#PCDATA)>
+<!ATTLIST child
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT first (#PCDATA)>
+<!ATTLIST first
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT family (#PCDATA)>
+<!ATTLIST family
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT brother (#PCDATA)>
+<!ATTLIST brother
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT sister (#PCDATA)>
+<!ATTLIST sister
+    xmlns CDATA #FIXED ''>
