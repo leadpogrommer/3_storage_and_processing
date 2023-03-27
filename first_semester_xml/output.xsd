@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="people" type="sanePersonStorage"/>
+
+  <xs:complexType name="sanePersonStorage" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="person" type="sanePerson" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="count" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="sanePerson" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="gender" type="gender" minOccurs="0"/>
+      <xs:element name="children" type="xmlChildren" minOccurs="0"/>
+      <xs:element name="parents" type="xmlParents" minOccurs="0"/>
+      <xs:element name="siblings" type="xmlSiblings" minOccurs="0"/>
+      <xs:element name="spouse" type="xmlSpouse" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="xmlChildren" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="daughter" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="son" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="child" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xmlParents" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="mother" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="father" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xmlSiblings" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="brother" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sister" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sibling" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xmlSpouse" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="wife" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="husband" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="gender">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="F"/>
+      <xs:enumeration value="M"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

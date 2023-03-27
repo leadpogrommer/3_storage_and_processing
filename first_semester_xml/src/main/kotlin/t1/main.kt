@@ -2,11 +2,14 @@ package t1
 
 import java.io.File
 import java.io.FileInputStream
+import javax.xml.XMLConstants
+import javax.xml.bind.JAXBContext
+import javax.xml.bind.Marshaller
+import javax.xml.bind.SchemaOutputResolver
 import javax.xml.parsers.SAXParserFactory
-
-
-
-
+import javax.xml.transform.Result
+import javax.xml.transform.stream.StreamResult
+import javax.xml.validation.SchemaFactory
 
 
 fun main(){
@@ -43,21 +46,36 @@ fun main(){
     println("Unused records:")
     debugPrint(finalUnmerged)
 
+
     val sanePeople = finalMerged.values.map {person ->
         SanePerson(
             person.id!!,
             person.calculateName(),
+            person.gender,
             person.childrenNumber ?: 0,
             person.siblingsNumber ?: 0,
-            person.husbandId ?: person.wifeId,
-            person.fatherId,
-            person.motherId,
-            person.childrenIds.toSet(),
-            person.siblingsIds.toSet(),
+            null,
+            null,
+            null,
+            null,
+            emptyList(),
+            emptyList(),
+
         )
     }.sortedBy { it.childrenNumber }
 
     val sanePeopleById = sanePeople.map { it.id to it }.toMap()
+
+    sanePeople.forEach { sanePerson ->
+        val person = finalMerged[sanePerson.id]!!
+
+        sanePerson.husband = (person.husbandId)?.let { sanePeopleById[it]!! }
+        sanePerson.wife = (person.wifeId)?.let { sanePeopleById[it]!! }
+        sanePerson.father = person.fatherId?.let { sanePeopleById[it]!! }
+        sanePerson.mother = person.motherId?.let { sanePeopleById[it]!! }
+        sanePerson.childrenIds = person.childrenIds.toSet().map { sanePeopleById[it]!! }
+        sanePerson.siblingsIds = person.siblingsIds.toSet().map { sanePeopleById[it]!! }
+    }
 
     println("Inconsistencies:")
     sanePeople.forEach {
@@ -68,6 +86,25 @@ fun main(){
             println("${it.id} ${it.name}: Expected sibling number = ${it.siblingsNumber}, got ${it.siblingsIds.size}")
         }
     }
+
+    val data = JAXBContext.newInstance(SanePersonStorage::class.java)
+    data.generateSchema(object : SchemaOutputResolver() {
+        override fun createOutput(namespaceUri: String, suggestedFileName: String): Result {
+            val file = File("output.xsd")
+            val result = StreamResult(file)
+            result.setSystemId(file.toURI().toURL().toString())
+            return result
+        }
+
+    })
+    val marshaller = data.createMarshaller()
+    marshaller.schema = SchemaFactory
+        .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+        .newSchema(
+            File("./output.xsd")
+        )
+    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+    marshaller.marshal(SanePersonStorage(sanePeople), File("./output.xml"))
 
 }
 
