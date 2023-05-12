@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  database:
+    build: .
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=demo
+    ports:
+      - 5432:5432
