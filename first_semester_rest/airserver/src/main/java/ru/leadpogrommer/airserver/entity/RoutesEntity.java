@@ -1,10 +1,18 @@
 package ru.leadpogrommer.airserver.entity;
 
+import io.hypersistence.utils.hibernate.type.array.IntArrayType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
+//@TypeD
 @Table(name = "routes", schema = "bookings", catalog = "demo")
 public class RoutesEntity {
     @Basic
@@ -36,8 +44,15 @@ public class RoutesEntity {
     @Column(name = "duration", nullable = true)
     private Object duration;
     @Basic
+    @Type(IntArrayType.class)
     @Column(name = "days_of_week", nullable = true)
-    private Object daysOfWeek;
+    private int[] daysOfWeek;
+    @Basic
+    @Column(name = "departure", nullable = true)
+    private LocalTime departure;
+    @Basic
+    @Column(name = "arrival", nullable = true)
+    private LocalTime arrival;
 
     public String getFlightNo() {
         return flightNo;
@@ -111,13 +126,13 @@ public class RoutesEntity {
         this.duration = duration;
     }
 
-    public Object getDaysOfWeek() {
+    public int[] getDaysOfWeek() {
         return daysOfWeek;
     }
 
-    public void setDaysOfWeek(Object daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
+//    public void setDaysOfWeek(List<Integer> daysOfWeek) {
+//        this.daysOfWeek = daysOfWeek;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -131,4 +146,20 @@ public class RoutesEntity {
     public int hashCode() {
         return Objects.hash(flightNo, departureAirport, departureAirportName, departureCity, arrivalAirport, arrivalAirportName, arrivalCity, aircraftCode, duration, daysOfWeek);
     }
+
+    public LocalTime getDeparture() {
+        return departure;
+    }
+
+//    public void setDeparture(Time departure) {
+//        this.departure = departure;
+//    }
+
+    public LocalTime getArrival() {
+        return arrival;
+    }
+
+//    public void setArrival(Time arrival) {
+//        this.arrival = arrival;
+//    }
 }

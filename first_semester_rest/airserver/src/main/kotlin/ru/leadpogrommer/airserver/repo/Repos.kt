@@ -8,6 +8,8 @@ import ru.leadpogrommer.airserver.entity.RoutesEntity
 
 @Repository
 interface RouteRepo: JpaRepository<RoutesEntity, String> {
+    fun findAllByDepartureAirport(airport: String): List<RoutesEntity>
+    fun findAllByArrivalAirport(airport: String): List<RoutesEntity>
 }
 
 @Repository

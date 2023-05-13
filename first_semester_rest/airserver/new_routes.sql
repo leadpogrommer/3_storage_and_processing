@@ -1,6 +1,15 @@
-drop view if exists routes;
+-- drop view if exists routes CASCADE ;
+DROP table if exists cities cascade ;
 
-create view routes
+CREATE table cities (
+                        id serial primary key,
+                        city text
+);
+
+insert into cities (city) SELECT distinct city from airports;
+
+
+create or replace view routes
             (flight_no, departure_airport, departure_airport_name, departure_city, arrival_airport,
              arrival_airport_name, arrival_city, aircraft_code, duration, days_of_week, departure, arrival)
 as
@@ -78,3 +87,31 @@ comment on column routes.departure is 'Departure time';
 
 comment on column routes.arrival is 'Arrival time';
 
+
+
+create or replace view airports(airport_code, airport_name, city, coordinates, timezone) as
+SELECT ml.airport_code,
+       ml.airport_name ->> lang() AS airport_name,
+       ml.city ->> lang()         AS city,
+       ml.coordinates,
+       ml.timezone,
+       ((ascii(right(ml.airport_code, 3))-65) + (ascii(right(ml.airport_code, 2))-65)*26 + (ascii(right(ml.airport_code, 1))-65)*26*26) as num_code
+FROM airports_data ml;
+
+
+create or replace view path_help(departure_airport, arrival_airport, id_departure, id_arrival, departure_city, arrival_city, departure, id_route, stub_cost) as
+SELECT
+    r.departure_airport,
+    r.arrival_airport,
+    a1.num_code as id_departure,
+    a2.num_code as id_arrival,
+    r.departure_city,
+    r.arrival_city,
+    r.departure,
+    ((a1.num_code + a2.num_code) * (a1.num_code + a2.num_code + 1) / 2 + a2.num_code) as id_route,
+    v.stub_cost
+FROM routes r
+         LEFT JOIN airports a1 on a1.airport_code = r.departure_airport
+         LEFT JOIN airports a2 on a2.airport_code = r.arrival_airport
+         left join (values (1)) as v(stub_cost) on true
+;

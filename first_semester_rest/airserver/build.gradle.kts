@@ -24,6 +24,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.3.2")
 }
 
 tasks.withType<KotlinCompile> {
