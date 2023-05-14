@@ -26,6 +26,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.3.2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+//    implementation("org.springdoc:springdoc-openapi-kotlin:2.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 }
 
 tasks.withType<KotlinCompile> {

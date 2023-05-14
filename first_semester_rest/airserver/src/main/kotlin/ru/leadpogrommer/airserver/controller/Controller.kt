@@ -1,13 +1,13 @@
 package ru.leadpogrommer.airserver.controller
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import ru.leadpogrommer.airserver.entity.RoutesEntity
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.web.bind.annotation.*
 import ru.leadpogrommer.airserver.repo.AirportRepo
 import ru.leadpogrommer.airserver.repo.RouteRepo
-import java.sql.Time
 import java.time.LocalTime
 
 
@@ -17,8 +17,8 @@ data class GetCitiesResponseDTO(
 )
 
 data class GetAirportsDto(
-        val departureCities: Set<AirportDTO>,
-        val arrivalCities : Set<AirportDTO>,
+        val departureAirports: Set<AirportDTO>,
+        val arrivalAirports: Set<AirportDTO>,
 )
 
 data class AirportDTO(
@@ -44,12 +44,40 @@ data class TimeDTO(
     }
 }
 
+data class LegDTO(
+    val departureAirport: String,
+    val arrivalAirport: String,
+    val departureTime: Long,
+    val arrivalTime: Long,
+    val flightNo: String,
+    val flightId: String
+)
+data class RouteDTO(
+    val totalCost: Int,
+    val totalDuration: Long,
+    val legs: List<LegDTO>
+)
+
+data class BookingDTO(
+    val flightIds: List<String>,
+    val comfortClass: Int,
+)
+
+data class CheckInDTO(
+    val bookingId: Int,
+    val seat: String,
+)
+
 @RestController
 @RequestMapping("api")
 class Controller(
         val routeRepo: RouteRepo,
         val airportRepo: AirportRepo,
 ) {
+    @Operation(summary = "Get all departure and arrival cities")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK")
+    )
     @GetMapping("cities")
     fun getCities(): GetCitiesResponseDTO{
         val routes = routeRepo.findAll()
@@ -59,6 +87,10 @@ class Controller(
         )
     }
 
+    @Operation(summary = "Get all departure and arrival airports")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK")
+    )
     @GetMapping("airports")
     fun getAirports():  GetAirportsDto {
         val routes = routeRepo.findAll()
@@ -68,20 +100,29 @@ class Controller(
         )
     }
 
+    @Operation(summary = "Get all airports within a city")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK"),
+        ApiResponse(
+            responseCode = "404",
+            description = "The city does not exist",
+            content = [
+                Content()
+            ]
+            )
+    )
     @GetMapping("airport/{city}")
     fun getAirportsInCity(@PathVariable city: String): List<AirportDTO>{
         return airportRepo.findAllByCity(city).map { AirportDTO(it.airportCode, it.airportName, it.city) }
     }
 
-    /*
-    Days of week
-Time of arrival
-Flight no
-Origin
-
-     */
 
     @GetMapping("schedule/inbound/{airport}")
+    @Operation(summary = "Get airport inbound schedule")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK"),
+        ApiResponse(responseCode = "404", description = "The airport does not exist", content = [Content()])
+    )
     fun getInboundSchedule(@PathVariable airport: String): List<ScheduleEntryDTO>{
         val routes = routeRepo.findAllByArrivalAirport(airport)
         return routes.map { ScheduleEntryDTO(
@@ -93,6 +134,11 @@ Origin
     }
 
     @GetMapping("schedule/outbound/{airport}")
+    @Operation(summary = "Get airport outbound schedule")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK"),
+        ApiResponse(responseCode = "404", description = "The airport does not exist", content = [Content()])
+    )
     fun getOuboundSchedule(@PathVariable airport: String): List<ScheduleEntryDTO>{
         val routes = routeRepo.findAllByDepartureAirport(airport)
         return routes.map { ScheduleEntryDTO(
@@ -102,4 +148,46 @@ Origin
             it.flightNo
         ) }
     }
+
+
+    @GetMapping("routes/{source}/{destination}/{date}")
+    @Operation(summary = "Find routes between two points")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK"),
+        ApiResponse(responseCode = "404", description = "Source or destination does not exist", content = [Content()])
+    )
+    fun getRoutes(
+        @Parameter(description = "Source airport or city") @PathVariable source: String,
+        @Parameter(description = "Destination airport or city") @PathVariable destination: String,
+        @Parameter(description = "Departure date in format YYYY-MM-DD") @PathVariable date: String,
+        @Parameter(description = "0 - economy, 1 - comfort, 2 - business")
+        @RequestParam(required = false, defaultValue = "0") comfortClass: Int,
+        @Parameter(description = "Max leg count, 0 = unbound (10)")
+        @RequestParam(required = false, defaultValue = "1") legCount: Int
+    ): RouteDTO{
+        TODO()
+    }
+
+    @PostMapping("booking")
+    @Operation(summary = "Create booking for route")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "OK"),
+        ApiResponse(responseCode = "404", description = "Invalid flight IDs", content = [Content()]),
+        ApiResponse(responseCode = "409", description = "No free seats", content = [Content()])
+    )
+    fun createBooking(@RequestBody route: BookingDTO): Int{
+        TODO()
+    }
+
+    @PostMapping("checkin")
+    @Operation(summary = "Check-in for a flight")
+    @ApiResponses(
+        ApiResponse(description = "OK", responseCode = "200"),
+        ApiResponse(description = "Wrong booking id or seat", responseCode = "404")
+    )
+    fun checkin(@RequestBody data: CheckInDTO){
+        TODO()
+    }
+
+
 }
