@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   database:
-    image: postgres:15.3-bullseye
+    build: docker/.
     restart: on-failure
     shm_size: 16g
     environment:
