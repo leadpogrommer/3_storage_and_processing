@@ -11,11 +11,11 @@ import java.util.Objects;
 public class TicketFlightsEntityPK implements Serializable {
     @Column(name = "ticket_no", nullable = false, length = 13)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String ticketNo;
     @Column(name = "flight_id", nullable = false)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int flightId;
 
     public String getTicketNo() {

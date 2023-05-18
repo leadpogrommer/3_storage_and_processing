@@ -3,18 +3,19 @@ package ru.leadpogrommer.airserver.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "bookings", schema = "bookings", catalog = "demo")
 public class BookingsEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "book_ref", nullable = false, length = 6)
     private String bookRef;
     @Basic
     @Column(name = "book_date", nullable = false)
-    private Object bookDate;
+    private LocalDateTime bookDate;
     @Basic
     @Column(name = "total_amount", nullable = false, precision = 2)
     private BigDecimal totalAmount;
@@ -27,11 +28,11 @@ public class BookingsEntity {
         this.bookRef = bookRef;
     }
 
-    public Object getBookDate() {
+    public LocalDateTime getBookDate() {
         return bookDate;
     }
 
-    public void setBookDate(Object bookDate) {
+    public void setBookDate(LocalDateTime bookDate) {
         this.bookDate = bookDate;
     }
 

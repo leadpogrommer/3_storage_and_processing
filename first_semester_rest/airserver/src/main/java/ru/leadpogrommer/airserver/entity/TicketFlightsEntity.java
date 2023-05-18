@@ -9,11 +9,11 @@ import java.util.Objects;
 @Table(name = "ticket_flights", schema = "bookings", catalog = "demo")
 @IdClass(TicketFlightsEntityPK.class)
 public class TicketFlightsEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ticket_no", nullable = false, length = 13)
     private String ticketNo;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "flight_id", nullable = false)
     private int flightId;
