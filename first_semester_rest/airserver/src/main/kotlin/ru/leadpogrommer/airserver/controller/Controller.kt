@@ -251,7 +251,7 @@ class Controller(
         val takenSeats = boardingRepo.findAllByFlightId(flight.flightId).map { it.seatNo }.toSet().intersect(seats)
         val freeSeats = seats.minus(takenSeats)
         if(freeSeats.isEmpty()){
-            throw HttpClientErrorException(HttpStatus.CONFLICT, "Overbooking! Fuck off until next flight")
+            throw HttpClientErrorException(HttpStatus.CONFLICT, "Overbooking! Please wait until next flight (or else...)")
         }
 
         val bp = BoardingPassesEntity().apply {
