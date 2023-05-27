@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.interceptor.TransactionAspectSupport
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import ru.leadpogrommer.airserver.entity.*
@@ -194,6 +196,7 @@ class Controller(
         ApiResponse(responseCode = "404", description = "Invalid flight IDs", content = [Content()]),
         ApiResponse(responseCode = "409", description = "No free seats", content = [Content()])
     )
+    @Transactional()
     fun createBooking(@RequestBody route: BookingDTO): BookingResultDTO{
         val flights = route.flightIds.map { flightVRepo.getReferenceById(it) }
         val classToName = arrayOf("Economy", "Comfort", "Business")
@@ -217,9 +220,17 @@ class Controller(
         }.let { ticketRepo.save(it) }
 
         val ticketFlights = prices.mapIndexed { i, price ->
+            val flight = flights[i]
+            val totalSeats = seatRepo.countByAircraftCodeAndFareConditions(flight.aircraftCode, fare)
+            val takenSeats = ticketFlightRepo.countByFlightIdAndFareConditions(flight.flightId, fare)
+            println("Id = ${flight.flightId}, total = $totalSeats, taken = $takenSeats, ticket = ${ticket.ticketNo}")
+            if (takenSeats >= totalSeats){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
+                throw HttpClientErrorException(HttpStatus.CONFLICT, "No seats for flight ${flight.flightId}")
+            }
             TicketFlightsEntity().apply {
                 ticketNo = ticket.ticketNo
-                flightId = flights[i].flightId
+                flightId = flight.flightId
                 fareConditions = price.fareConditions
                 amount = price.getprice().toBigDecimal()
             }.let { ticketFlightRepo.save(it) }

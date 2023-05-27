@@ -52,11 +52,13 @@ interface BookingRepo: JpaRepository<BookingsEntity, String>{
 @Repository
 interface TicketFlightRepo: JpaRepository<TicketFlightsEntity, TicketFlightsEntityPK>{
     fun findAllByFlightIdAndFareConditions(flightId: Int, fareConditions: String): List<TicketFlightsEntity>
+    fun countByFlightIdAndFareConditions(flightId: Int, fareConditions: String): Int
 }
 
 @Repository
 interface SeatRepo: JpaRepository<SeatsEntity, SeatsEntityPK>{
     fun getAllByAircraftCodeAndFareConditions(aircraftCode: String, fareConditions: String): List<SeatsEntity>
+    fun countByAircraftCodeAndFareConditions(aircraftCode: String, fareConditions: String): Int
 }
 
 @Repository
